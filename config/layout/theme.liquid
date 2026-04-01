@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUNE — Lingerie de Luxe</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0909;--gold:#c9a96e;--rose:#8b3a52;--cream:#f5efe8;
+  --mid:#1a1414;--dark2:#100c0c;--muted:#6a5858;--muted2:#3a2a2a;
+  --light:#f5efe8;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Josefin Sans',sans-serif;color:var(--cream);overflow-x:hidden;cursor:none}
+ 
+/* ─ CURSOR ─ */
+.cur{width:7px;height:7px;border-radius:50%;background:var(--gold);position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+.cur-ring{width:32px;height:32px;border-radius:50%;border:1px solid rgba(201,169,110,.35);position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .22s ease}
+body:hover .cur{opacity:1}
+ 
+/* ─ PAGE SYSTEM ─ */
+.page{display:none;animation:pgIn .45s ease}
+.page.active{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+ 
+/* ─ NAV ─ */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 52px;transition:background .4s,backdrop-filter .4s}
+nav.scrolled,nav.solid{background:rgba(11,9,9,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,169,110,.08)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;letter-spacing:.42em;color:var(--cream);text-decoration:none;cursor:none}
+.nav-links{display:flex;gap:34px;list-style:none}
+.nav-links a{font-size:.5rem;letter-spacing:.38em;color:#666;text-decoration:none;transition:color .3s;cursor:none;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.nav-links a:hover,.nav-links a.active-nav{color:var(--cream)}
+.nav-links a:hover::after,.nav-links a.active-nav::after{transform:scaleX(1)}
+.nav-right{display:flex;align-items:center;gap:22px}
+.nav-icon{background:none;border:none;color:#666;font-size:.85rem;cursor:none;transition:color .3s;padding:6px;position:relative}
+.nav-icon:hover{color:var(--gold)}
+.cart-count{position:absolute;top:0;right:0;width:14px;height:14px;border-radius:50%;background:var(--rose);font-size:.38rem;display:flex;align-items:center;justify-content:center;color:white;font-family:'Josefin Sans',sans-serif}
+ 
+/* ─ ANNOUNCEMENT ─ */
+.announce{background:var(--rose);height:36px;display:flex;align-items:center;justify-content:center;font-size:.48rem;letter-spacing:.4em;color:rgba(245,239,232,.9);font-weight:100;position:relative;z-index:201}
+ 
+/* ═══════════════ HOME PAGE ═══════════════ */
+ 
+/* Hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;text-align:center;padding:0 40px;padding-top:104px}
+.hero-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+.blob-r{width:550px;height:550px;background:radial-gradient(ellipse,rgba(139,58,82,.22) 0%,transparent 70%);top:-8%;right:-4%;animation:bd 14s ease-in-out infinite}
+.blob-g{width:380px;height:380px;background:radial-gradient(ellipse,rgba(201,169,110,.09) 0%,transparent 70%);bottom:4%;left:-4%;animation:bd 18s ease-in-out infinite reverse}
+@keyframes bd{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(25px,-18px) scale(1.04)}}
+.hero::before{content:'';position:absolute;inset:-50%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");opacity:.35;pointer-events:none;animation:grain 8s steps(2) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}25%{transform:translate(-2%,-3%)}50%{transform:translate(3%,2%)}75%{transform:translate(-1%,4%)}}
+ 
+.hero-inner{position:relative;z-index:2}
+.hero-eyebrow{font-size:.5rem;letter-spacing:.52em;color:var(--gold);font-weight:100;margin-bottom:28px;opacity:0;animation:fu .8s .3s forwards;display:flex;align-items:center;justify-content:center;gap:14px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:36px;height:1px;background:rgba(201,169,110,.4)}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(5.5rem,15vw,13rem);font-weight:300;letter-spacing:.18em;color:var(--cream);line-height:.88;opacity:0;animation:fu 1s .5s forwards}
+.hero-title em{font-style:italic;color:var(--gold);display:block;font-size:.68em;letter-spacing:.1em;margin-top:6px}
+.hero-sub{font-size:.55rem;letter-spacing:.42em;color:#4a3a3a;font-weight:100;margin:26px 0 52px;opacity:0;animation:fu .8s .8s forwards}
+.hero-ctas{display:flex;align-items:center;gap:26px;justify-content:center;opacity:0;animation:fu .8s 1s forwards}
+.btn-p{padding:15px 42px;background:var(--gold);color:var(--dark2);font-size:.5rem;letter-spacing:.38em;font-weight:300;text-decoration:none;transition:all .3s;cursor:none;border:none;font-family:'Josefin Sans',sans-serif}
+.btn-p:hover{background:var(--cream)}
+.btn-gh{font-size:.5rem;letter-spacing:.38em;color:#666;text-decoration:none;transition:color .3s;cursor:none;display:flex;align-items:center;gap:8px;background:none;border:none;font-family:'Josefin Sans',sans-serif}
+.btn-gh::after{content:'→';color:var(--gold);transition:transform .3s}
+.btn-gh:hover{color:var(--cream)}
+.btn-gh:hover::after{transform:translateX(4px)}
+.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;opacity:0;animation:fadeIn 1s 1.6s forwards;z-index:2}
+.scroll-line{width:1px;height:52px;background:linear-gradient(to bottom,transparent,rgba(201,169,110,.5));animation:sp 2s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:.3}50%{opacity:1}}
+.scroll-txt{font-size:.4rem;letter-spacing:.42em;color:#333}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+ 
+/* Marquee */
+.marquee{border-top:1px solid #181818;border-bottom:1px solid #181818;padding:14px 0;overflow:hidden;background:var(--dark2)}
+.m-track{display:flex;gap:52px;animation:mq 24s linear infinite;white-space:nowrap}
+.m-track span{font-size:.46rem;letter-spacing:.52em;color:#2e2e2e;flex-shrink:0}
+.m-track .dot{color:var(--gold)}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+ 
+/* Featured */
+.featured{padding:110px 52px;background:var(--bg)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px}
+.sec-ey{font-size:.47rem;letter-spacing:.48em;color:var(--gold);font-weight:100;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.sec-ey::before{content:'';width:18px;height:1px;background:var(--gold);opacity:.6}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:300;color:var(--cream)}
+.sec-title em{font-style:italic;color:var(--gold)}
+.see-all{font-size:.46rem;letter-spacing:.38em;color:#444;text-decoration:none;cursor:none;display:flex;align-items:center;gap:8px;transition:color .3s}
+.see-all::after{content:'→';color:var(--gold);transition:transform .3s}
+.see-all:hover{color:var(--gold)}
+.see-all:hover::after{transform:translateX(4px)}
+ 
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.prod-card{background:var(--mid);position:relative;overflow:hidden;cursor:none}
+.prod-card:first-child{grid-row:span 2}
+.prod-img{aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.prod-card:first-child .prod-img{aspect-ratio:unset;height:100%}
+.prod-bg{position:absolute;inset:0;transition:transform .7s ease}
+.prod-card:hover .prod-bg{transform:scale(1.05)}
+.prod-bg-1{background:radial-gradient(ellipse at 55% 35%,rgba(139,58,82,.32) 0%,transparent 60%),linear-gradient(165deg,#201414 0%,#0e0909 100%)}
+.prod-bg-2{background:radial-gradient(ellipse at 40% 60%,rgba(201,169,110,.18) 0%,transparent 55%),linear-gradient(195deg,#1c1515 0%,#0c0909 100%)}
+.prod-bg-3{background:radial-gradient(ellipse at 65% 40%,rgba(139,58,82,.2) 0%,transparent 50%),linear-gradient(145deg,#1a1212 0%,#0d0a0a 100%)}
+.prod-bg-4{background:radial-gradient(ellipse at 35% 55%,rgba(201,169,110,.14) 0%,transparent 55%),linear-gradient(175deg,#181212 0%,#0b0909 100%)}
+ 
+.prod-moon{position:absolute;opacity:.55}
+.prod-info{padding:24px 28px;position:relative;z-index:2}
+.prod-tag{font-size:.42rem;letter-spacing:.42em;color:var(--gold);font-weight:100;margin-bottom:7px}
+.prod-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--cream);margin-bottom:5px}
+.prod-name em{font-style:italic}
+.prod-price{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold);font-weight:300}
+.prod-hover{position:absolute;bottom:0;left:0;right:0;background:rgba(201,169,110,.92);padding:14px;display:flex;justify-content:center;transform:translateY(100%);transition:transform .35s ease}
+.prod-card:hover .prod-hover{transform:translateY(0)}
+.prod-hover-btn{font-size:.46rem;letter-spacing:.38em;color:var(--dark2);font-weight:300;background:none;border:none;cursor:none;font-family:'Josefin Sans',sans-serif}
+ 
+/* Brand story */
+.story{display:grid;grid-template-columns:1fr 1fr;background:var(--dark2)}
+.story-visual{position:relative;min-height:580px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.story-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(139,58,82,.2) 0%,transparent 65%)}
+.story-moon-wrap{position:relative;z-index:2}
+.story-text{padding:90px 68px;display:flex;flex-direction:column;justify-content:center}
+.story-body{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--muted);line-height:1.95;font-weight:300;margin:28px 0 44px}
+.story-stats{display:flex;gap:40px;padding-top:32px;border-top:1px solid #1e1e1e}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:2.6rem;color:var(--gold);font-weight:300;line-height:1}
+.stat-l{font-size:.44rem;letter-spacing:.38em;color:#3a2a2a;margin-top:6px}
+ 
+/* Testimonials */
+.testi{padding:100px 0;background:var(--bg);overflow:hidden}
+.testi-head{padding:0 52px;margin-bottom:52px}
+.t-track{display:flex;gap:20px;animation:ts 28s linear infinite}
+.t-track:hover{animation-play-state:paused}
+@keyframes ts{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-card{flex-shrink:0;width:360px;background:var(--mid);border:1px solid #1e1e1e;padding:36px;position:relative}
+.t-card::before{content:'"';position:absolute;top:16px;right:22px;font-family:'Cormorant Garamond',serif;font-size:4.5rem;color:rgba(201,169,110,.08);line-height:1}
+.t-text{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:#8a7070;line-height:1.85;font-weight:300;margin-bottom:24px}
+.t-auth{display:flex;align-items:center;gap:12px}
+.t-av{width:32px;height:32px;border-radius:50%;background:var(--rose);opacity:.65;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.85rem;color:var(--cream);flex-shrink:0}
+.t-name{font-size:.46rem;letter-spacing:.28em;color:var(--cream)}
+.t-stars{color:var(--gold);font-size:.5rem;margin-top:3px}
+ 
+/* Newsletter */
+.nl{padding:120px 52px;background:var(--mid);text-align:center;position:relative;overflow:hidden}
+.nl::before{content:'LUNE';position:absolute;font-family:'Cormorant Garamond',serif;font-size:28vw;font-weight:300;color:rgba(201,169,110,.022);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;line-height:1}
+.nl-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,4.2rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;position:relative;z-index:1}
+.nl-title em{font-style:italic;color:var(--gold)}
+.nl-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--muted);margin-bottom:48px;position:relative;z-index:1}
+.nl-form{display:flex;justify-content:center;gap:0;max-width:460px;margin:0 auto;position:relative;z-index:1}
+.nl-input{flex:1;padding:15px 22px;background:var(--bg);border:1px solid #222;border-right:none;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:.5rem;letter-spacing:.22em;font-weight:100;outline:none}
+.nl-input::placeholder{color:#2a2a2a}
+.nl-btn{padding:15px 28px;background:var(--gold);border:none;color:var(--dark2);font-family:'Josefin Sans',sans-serif;font-size:.48rem;letter-spacing:.38em;font-weight:300;cursor:none;transition:background .3s}
+.nl-btn:hover{background:var(--cream)}
+ 
+/* ═══════════════ COLLECTION PAGE ═══════════════ */
+.coll-hero{padding:160px 52px 80px;text-align:center;position:relative;overflow:hidden;background:var(--dark2)}
+.coll-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(139,58,82,.16) 0%,transparent 60%)}
+.coll-hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,8vw,6.5rem);font-weight:300;letter-spacing:.12em;color:var(--cream);position:relative;z-index:1}
+.coll-hero-title em{font-style:italic;color:var(--gold)}
+.coll-filters{display:flex;gap:0;justify-content:center;padding:48px 52px 36px;border-bottom:1px solid #181818}
+.filter-btn{background:none;border:none;border-bottom:2px solid transparent;color:#444;font-family:'Josefin Sans',sans-serif;font-size:.5rem;letter-spacing:.38em;padding:10px 26px;cursor:none;transition:all .3s}
+.filter-btn.active,.filter-btn:hover{color:var(--cream);border-bottom-color:var(--gold)}
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px}
+.coll-card{background:var(--mid);position:relative;cursor:none;overflow:hidden}
+.coll-card-img{aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.coll-card-bg{position:absolute;inset:0;transition:transform .6s ease}
+.coll-card:hover .coll-card-bg{transform:scale(1.04)}
+.coll-card-info{padding:22px 26px 28px}
+.coll-card-cat{font-size:.42rem;letter-spacing:.42em;color:var(--gold);font-weight:100;margin-bottom:6px}
+.coll-card-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--cream);margin-bottom:4px}
+.coll-card-price{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--gold);font-weight:300}
+.coll-card-add{position:absolute;bottom:22px;right:22px;width:38px;height:38px;border:1px solid rgba(201,169,110,.3);background:none;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:.9rem;cursor:none;transition:all .3s;opacity:0}
+.coll-card:hover .coll-card-add{opacity:1}
+.coll-card-add:hover{background:var(--gold);color:var(--dark2)}
+.coll-card-badge{position:absolute;top:18px;left:18px;background:var(--rose);padding:5px 12px;font-size:.4rem;letter-spacing:.35em;color:var(--cream)}
+ 
+/* ═══════════════ PRODUCT PAGE ═══════════════ */
+.prod-page{padding:100px 52px 80px}
+.prod-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:start}
+.prod-gallery{position:sticky;top:90px}
+.prod-main-img{aspect-ratio:3/4;background:var(--mid);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.prod-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.thumb{aspect-ratio:1;background:var(--mid);cursor:none;border:1px solid transparent;transition:border-color .3s;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.thumb.active,.thumb:hover{border-color:var(--gold)}
+.prod-details{}
+.prod-d-tag{font-size:.46rem;letter-spacing:.45em;color:var(--gold);font-weight:100;margin-bottom:14px}
+.prod-d-name{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--cream);line-height:1.05;margin-bottom:10px}
+.prod-d-name em{font-style:italic;color:var(--gold)}
+.prod-d-price{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);font-weight:300;margin-bottom:28px}
+.prod-d-divider{width:60px;height:1px;background:rgba(201,169,110,.35);margin-bottom:28px}
+.prod-d-desc{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--muted);line-height:1.9;font-weight:300;margin-bottom:36px}
+.size-label{font-size:.46rem;letter-spacing:.38em;color:#666;margin-bottom:14px}
+.sizes{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.size-btn{width:44px;height:44px;border:1px solid #2a2a2a;background:none;color:#666;font-family:'Josefin Sans',sans-serif;font-size:.5rem;cursor:none;transition:all .3s}
+.size-btn.active,.size-btn:hover{border-color:var(--gold);color:var(--cream)}
+.size-btn.active{background:var(--gold);color:var(--dark2)}
+.add-cart-btn{width:100%;padding:17px;background:var(--gold);border:none;color:var(--dark2);font-family:'Josefin Sans',sans-serif;font-size:.52rem;letter-spacing:.42em;font-weight:300;cursor:none;margin-bottom:14px;transition:background .3s}
+.add-cart-btn:hover{background:var(--cream)}
+.wishlist-btn{width:100%;padding:14px;background:none;border:1px solid #222;color:#555;font-family:'Josefin Sans',sans-serif;font-size:.5rem;letter-spacing:.38em;cursor:none;transition:all .3s}
+.wishlist-btn:hover{border-color:rgba(201,169,110,.4);color:var(--cream)}
+.prod-features{margin-top:36px;border-top:1px solid #1a1a1a;padding-top:28px;display:flex;flex-direction:column;gap:16px}
+.feat{display:flex;align-items:center;gap:14px}
+.feat-icon{width:32px;height:32px;border:1px solid rgba(201,169,110,.2);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--gold);flex-shrink:0}
+.feat-text{font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--muted)}
+.prod-accord{margin-top:32px}
+.accord-item{border-top:1px solid #1a1a1a}
+.accord-btn{width:100%;background:none;border:none;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:.5rem;letter-spacing:.35em;padding:18px 0;display:flex;justify-content:space-between;align-items:center;cursor:none;transition:color .3s}
+.accord-btn:hover{color:var(--gold)}
+.accord-content{display:none;padding-bottom:18px}
+.accord-content p{font-family:'Cormorant Garamond',serif;font-size:.92rem;color:var(--muted);line-height:1.8}
+.accord-item.open .accord-content{display:block}
+.accord-item.open .accord-btn{color:var(--gold)}
+ 
+/* ═══════════════ CART PAGE ═══════════════ */
+.cart-page{min-height:100vh;padding:120px 52px 80px}
+.cart-layout{display:grid;grid-template-columns:1.3fr .7fr;gap:60px;align-items:start}
+.cart-title{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--cream);margin-bottom:48px}
+.cart-title em{font-style:italic;color:var(--gold)}
+.cart-items{display:flex;flex-direction:column;gap:0}
+.cart-item{display:grid;grid-template-columns:100px 1fr auto;gap:24px;padding:28px 0;border-bottom:1px solid #181818;align-items:center}
+.cart-item-img{aspect-ratio:1;background:var(--mid);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cart-item-info{}
+.cart-item-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--cream);margin-bottom:5px}
+.cart-item-name em{font-style:italic;color:var(--gold)}
+.cart-item-meta{font-size:.44rem;letter-spacing:.3em;color:#444;margin-bottom:12px}
+.cart-qty{display:flex;align-items:center;gap:0;width:fit-content}
+.qty-btn{width:32px;height:32px;border:1px solid #2a2a2a;background:none;color:#666;cursor:none;font-size:.9rem;transition:all .3s;display:flex;align-items:center;justify-content:center}
+.qty-btn:hover{border-color:var(--gold);color:var(--cream)}
+.qty-val{width:40px;height:32px;border-top:1px solid #2a2a2a;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--cream)}
+.cart-item-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold);text-align:right}
+.cart-remove{font-size:.42rem;letter-spacing:.3em;color:#333;cursor:none;background:none;border:none;font-family:'Josefin Sans',sans-serif;transition:color .3s;margin-top:8px;display:block}
+.cart-remove:hover{color:var(--rose)}
+ 
+.cart-summary{background:var(--mid);padding:40px;position:sticky;top:90px}
+.summary-title{font-size:.5rem;letter-spacing:.45em;color:var(--gold);margin-bottom:28px}
+.summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.summary-label{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--muted)}
+.summary-val{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--cream)}
+.summary-divider{height:1px;background:#1e1e1e;margin:20px 0}
+.summary-total-label{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--cream)}
+.summary-total-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold)}
+.checkout-btn{width:100%;padding:18px;background:var(--gold);border:none;color:var(--dark2);font-family:'Josefin Sans',sans-serif;font-size:.52rem;letter-spacing:.42em;margin-top:24px;cursor:none;transition:background .3s}
+.checkout-btn:hover{background:var(--cream)}
+.summary-note{font-size:.44rem;letter-spacing:.28em;color:#2a2a2a;text-align:center;margin-top:14px}
+.promo-row{display:flex;gap:0;margin:24px 0}
+.promo-input{flex:1;padding:12px 16px;background:var(--bg);border:1px solid #222;border-right:none;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:.46rem;letter-spacing:.2em;outline:none}
+.promo-btn{padding:12px 18px;background:none;border:1px solid #222;color:#555;font-family:'Josefin Sans',sans-serif;font-size:.44rem;letter-spacing:.3em;cursor:none;transition:all .3s}
+.promo-btn:hover{border-color:var(--gold);color:var(--gold)}
+ 
+/* ═══════════════ ABOUT PAGE ═══════════════ */
+.about-hero{min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:140px 52px 100px;background:var(--dark2);position:relative;overflow:hidden}
+.about-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(139,58,82,.15) 0%,transparent 65%)}
+.about-hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,8vw,7rem);font-weight:300;color:var(--cream);position:relative;z-index:1}
+.about-hero-title em{font-style:italic;color:var(--gold);display:block}
+.about-content{padding:100px 52px}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-bottom:100px}
+.about-img-box{aspect-ratio:4/5;background:var(--mid);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.about-text-block{}
+.ab-body{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--muted);line-height:1.95;font-weight:300;margin:24px 0 36px}
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:60px}
+.value-card{background:var(--mid);padding:36px;border:1px solid #1a1a1a;position:relative}
+.value-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);opacity:.4}
+.value-num{font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--gold);margin-bottom:12px}
+.value-title{font-size:.5rem;letter-spacing:.38em;color:var(--cream);margin-bottom:10px}
+.value-desc{font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--muted);line-height:1.7}
+.team-section{padding:80px 52px;background:var(--dark2);text-align:center}
+.team-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-style:italic;color:var(--cream);line-height:1.5;max-width:700px;margin:40px auto 0}
+ 
+/* ═══════════════ CONTACT PAGE ═══════════════ */
+.contact-page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:68px}
+.contact-left{background:var(--mid);padding:100px 60px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.contact-left::before{content:'';position:absolute;top:-100px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(ellipse,rgba(139,58,82,.15) 0%,transparent 70%)}
+.contact-right{background:var(--bg);padding:100px 60px;display:flex;flex-direction:column;justify-content:center}
+.contact-h{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--cream);margin-bottom:36px}
+.contact-h em{font-style:italic;color:var(--gold);display:block}
+.contact-info{display:flex;flex-direction:column;gap:24px;margin-top:48px}
+.c-info-item{display:flex;align-items:flex-start;gap:18px}
+.c-icon{width:36px;height:36px;border:1px solid rgba(201,169,110,.2);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:.75rem;flex-shrink:0;margin-top:2px}
+.c-info-label{font-size:.44rem;letter-spacing:.35em;color:var(--gold);margin-bottom:6px}
+.c-info-val{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--muted)}
+.form-group{margin-bottom:20px}
+.form-label{font-size:.45rem;letter-spacing:.38em;color:#444;display:block;margin-bottom:9px}
+.form-input,.form-textarea{width:100%;padding:13px 18px;background:var(--mid);border:1px solid #1e1e1e;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:.5rem;letter-spacing:.18em;outline:none;transition:border-color .3s}
+.form-input:focus,.form-textarea:focus{border-color:rgba(201,169,110,.4)}
+.form-textarea{height:130px;resize:none}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-submit{width:100%;padding:16px;background:var(--gold);border:none;color:var(--dark2);font-family:'Josefin Sans',sans-serif;font-size:.5rem;letter-spacing:.42em;cursor:none;margin-top:8px;transition:background .3s}
+.form-submit:hover{background:var(--cream)}
+ 
+/* ─ FOOTER ─ */
+footer{background:#060506;border-top:1px solid #111;padding:72px 52px 36px}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:52px;margin-bottom:60px}
+.f-brand{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;letter-spacing:.38em;color:var(--cream);margin-bottom:16px}
+.f-desc{font-family:'Cormorant Garamond',serif;font-size:.9rem;color:#3a2a2a;line-height:1.85;font-weight:300;max-width:240px}
+.f-col h4{font-size:.46rem;letter-spacing:.42em;color:var(--gold);font-weight:100;margin-bottom:20px}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.f-col a{font-family:'Cormorant Garamond',serif;font-size:.9rem;color:#3a2a2a;text-decoration:none;transition:color .3s;cursor:none}
+.f-col a:hover{color:var(--cream)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #111;padding-top:24px}
+.f-copy{font-size:.42rem;letter-spacing:.32em;color:#222}
+.f-social{display:flex;gap:22px}
+.f-social a{font-size:.42rem;letter-spacing:.32em;color:#222;text-decoration:none;transition:color .3s;cursor:none}
+.f-social a:hover{color:var(--gold)}
+ 
+/* ─ TOAST ─ */
+.toast{position:fixed;bottom:40px;right:40px;background:var(--gold);color:var(--dark2);padding:14px 28px;font-size:.48rem;letter-spacing:.35em;z-index:1000;transform:translateY(100px);opacity:0;transition:all .4s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+ 
+/* ─ REVEAL ─ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+ 
+/* ─ MOBILE ─ */
+@media(max-width:900px){
+  nav{padding:0 24px}
+  .nav-links{display:none}
+  .hero-title{font-size:clamp(4rem,18vw,7rem)}
+  .featured,.coll-hero,.testi-head,.nl,.about-content,.contact-page,.prod-page,.cart-page,.team-section{padding-left:24px;padding-right:24px}
+  .prod-grid{grid-template-columns:1fr 1fr}
+  .prod-card:first-child{grid-row:unset}
+  .coll-grid{grid-template-columns:1fr 1fr}
+  .story,.about-grid,.prod-layout,.cart-layout,.contact-page{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .cart-item{grid-template-columns:80px 1fr auto}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+ 
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curR"></div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">Ajouté au panier ✦</div>
+ 
+<!-- ANNOUNCE -->
+<div class="announce">LIVRAISON OFFERTE DÈS 120€ D'ACHAT &nbsp;✦&nbsp; NOUVELLE COLLECTION DISPONIBLE</div>
+ 
+<!-- NAV -->
+<nav id="nav" class="solid">
+  <a class="nav-logo" onclick="goTo('home')">LUNE</a>
+  <ul class="nav-links">
+    <li><a onclick="goTo('home')" id="nl-home" class="active-nav">Accueil</a></li>
+    <li><a onclick="goTo('collection')" id="nl-col">Collections</a></li>
+    <li><a onclick="goTo('about')" id="nl-about">Notre Histoire</a></li>
+    <li><a onclick="goTo('contact')" id="nl-contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-icon" onclick="goTo('collection')">🔍</button>
+    <button class="nav-icon" style="position:relative;" onclick="goTo('cart')">
+      🛍
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+ 
+<!-- ════════════════════════════════════════
+     HOME
+════════════════════════════════════════ -->
+<div class="page active" id="pg-home">
+ 
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-blob blob-r"></div>
+    <div class="hero-blob blob-g"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">NOUVELLE COLLECTION 2025</div>
+      <h1 class="hero-title">LUNE<em>Lingerie de Luxe</em></h1>
+      <p class="hero-sub">PARIS &nbsp;·&nbsp; SENSUALITÉ &nbsp;·&nbsp; RAFFINEMENT</p>
+      <div class="hero-ctas">
+        <button class="btn-p" onclick="goTo('collection')">EXPLORER LA COLLECTION</button>
+        <button class="btn-gh" onclick="goTo('about')">Notre histoire</button>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <div class="scroll-txt">DÉFILER</div>
+    </div>
+  </section>
+ 
+  <!-- Marquee -->
+  <div class="marquee">
+    <div class="m-track">
+      <span>LINGERIE DE LUXE</span><span class="dot">✦</span><span>FAIT AVEC SOIN</span><span class="dot">✦</span><span>PARIS</span><span class="dot">✦</span><span>FÉMINITÉ SANS COMPROMIS</span><span class="dot">✦</span><span>QUALITÉ SUPÉRIEURE</span><span class="dot">✦</span><span>COLLECTION 2025</span><span class="dot">✦</span>
+      <span>LINGERIE DE LUXE</span><span class="dot">✦</span><span>FAIT AVEC SOIN</span><span class="dot">✦</span><span>PARIS</span><span class="dot">✦</span><span>FÉMINITÉ SANS COMPROMIS</span><span class="dot">✦</span><span>QUALITÉ SUPÉRIEURE</span><span class="dot">✦</span><span>COLLECTION 2025</span><span class="dot">✦</span>
+    </div>
+  </div>
+ 
+  <!-- Featured Products -->
+  <section class="featured">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-ey">SÉLECTION</div>
+        <h2 class="sec-title">Pièces <em>Phares</em></h2>
+      </div>
+      <a onclick="goTo('collection')" class="see-all">Voir tout</a>
+    </div>
+    <div class="prod-grid reveal">
+      <!-- Large card -->
+      <div class="prod-card" onclick="openProduct('nuit')">
+        <div class="prod-img" style="height:480px">
+          <div class="prod-bg prod-bg-1"></div>
+          <div class="prod-moon" style="top:30px;right:30px">
+            <svg width="90" height="90" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#c9a96e" stroke-width=".7" opacity=".22"/><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".8"/><circle cx="27" cy="34" r="1.6" fill="#c9a96e" opacity=".5"/><circle cx="23" cy="52" r="1.1" fill="#c9a96e" opacity=".4"/><circle cx="29" cy="68" r="2" fill="#c9a96e" opacity=".45"/></svg>
+          </div>
+          <div class="prod-hover"><button class="prod-hover-btn" onclick="addCart(event,'Nuit Étoilée','89')">AJOUTER AU PANIER</button></div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-tag">COLLECTION PHARE</div>
+          <div class="prod-name">Nuit <em>Étoilée</em></div>
+          <div class="prod-price">89 €</div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="prod-card" onclick="openProduct('lumiere')">
+        <div class="prod-img" style="height:230px">
+          <div class="prod-bg prod-bg-2"></div>
+          <div class="prod-moon" style="bottom:18px;right:18px">
+            <svg width="65" height="65" viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".75"/></svg>
+          </div>
+          <div class="prod-hover"><button class="prod-hover-btn" onclick="addCart(event,'Lumière Dorée','74')">AJOUTER AU PANIER</button></div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-tag">SOIE & SATIN</div>
+          <div class="prod-name">Lumière <em>Dorée</em></div>
+          <div class="prod-price">74 €</div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="prod-card" onclick="openProduct('rouge')">
+        <div class="prod-img" style="height:230px">
+          <div class="prod-bg prod-bg-3"></div>
+          <div class="prod-moon" style="top:18px;left:18px">
+            <svg width="55" height="55" viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".72"/></svg>
+          </div>
+          <div class="prod-hover"><button class="prod-hover-btn" onclick="addCart(event,'Rouge Secret','95')">AJOUTER AU PANIER</button></div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-tag">ÉDITION LIMITÉE</div>
+          <div class="prod-name">Rouge <em>Secret</em></div>
+          <div class="prod-price">95 €</div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Story -->
+  <section class="story">
+    <div class="story-visual reveal">
+      <div class="story-glow"></div>
+      <div class="story-moon-wrap">
+        <svg width="220" height="220" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#c9a96e" stroke-width=".7" opacity=".18"/>
+          <circle cx="100" cy="100" r="78" fill="none" stroke="#c9a96e" stroke-width=".4" opacity=".1"/>
+          <circle cx="100" cy="100" r="65" fill="#180f0f"/>
+          <path d="M100 37 A63 63 0 1 1 100 163 A44 44 0 1 0 100 37Z" fill="#c9a96e" opacity=".8"/>
+          <path d="M100 41 A59 59 0 0 1 152 124 A40 40 0 0 0 106 54Z" fill="#f5efe8" opacity=".06"/>
+          <circle cx="50" cy="70" r="1.8" fill="#c9a96e" opacity=".5"/>
+          <circle cx="42" cy="100" r="1.2" fill="#c9a96e" opacity=".4"/>
+          <circle cx="54" cy="130" r="2.2" fill="#c9a96e" opacity=".45"/>
+        </svg>
+      </div>
+    </div>
+    <div class="story-text reveal">
+      <div class="sec-ey">NOTRE HISTOIRE</div>
+      <h2 class="sec-title">L'intimité <em>réinventée</em></h2>
+      <p class="story-body">LUNE est née d'une conviction simple : la lingerie de luxe n'est pas une extravagance, c'est une nécessité. Chaque pièce est pensée pour la femme qui connaît sa valeur — et ne la négocie jamais.</p>
+      <button class="btn-gh" onclick="goTo('about')" style="width:fit-content">Découvrir notre histoire</button>
+      <div class="story-stats">
+        <div><div class="stat-n">100%</div><div class="stat-l">MATIÈRES PREMIUM</div></div>
+        <div><div class="stat-n">3</div><div class="stat-l">COLLECTIONS / AN</div></div>
+        <div><div class="stat-n">∞</div><div class="stat-l">CONFIANCE EN SOI</div></div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Testimonials -->
+  <section class="testi">
+    <div class="testi-head reveal">
+      <div class="sec-ey">TÉMOIGNAGES</div>
+      <h2 class="sec-title">Elles parlent <em>de LUNE</em></h2>
+    </div>
+    <div class="t-track">
+      <div class="t-card"><div class="t-text">"La qualité est incomparable. J'ai porté des marques bien plus chères — LUNE les surpasse toutes."</div><div class="t-auth"><div class="t-av">S</div><div><div class="t-name">SARAH M. · PARIS</div><div class="t-stars">★★★★★</div></div></div></div>
+      <div class="t-card"><div class="t-text">"Dès que j'ouvre la boîte, c'est une expérience. Le packaging respire le luxe absolu."</div><div class="t-auth"><div class="t-av">L</div><div><div class="t-name">LEÏLA K. · TUNIS</div><div class="t-stars">★★★★★</div></div></div></div>
+      <div class="t-card"><div class="t-text">"J'offre LUNE à toutes mes amies. C'est le cadeau parfait pour une femme qui mérite le meilleur."</div><div class="t-auth"><div class="t-av">N</div><div><div class="t-name">NINA R. · LYON</div><div class="t-stars">★★★★★</div></div></div></div>
+      <div class="t-card"><div class="t-text">"La dentelle Nuit Étoilée est d'une légèreté incroyable — on oublie presque qu'on la porte."</div><div class="t-auth"><div class="t-av">A</div><div><div class="t-name">AMIRA B. · CASABLANCA</div><div class="t-stars">★★★★★</div></div></div></div>
+      <div class="t-card"><div class="t-text">"La qualité est incomparable. J'ai porté des marques bien plus chères — LUNE les surpasse toutes."</div><div class="t-auth"><div class="t-av">S</div><div><div class="t-name">SARAH M. · PARIS</div><div class="t-stars">★★★★★</div></div></div></div>
+      <div class="t-card"><div class="t-text">"Dès que j'ouvre la boîte, c'est une expérience. Le packaging respire le luxe absolu."</div><div class="t-auth"><div class="t-av">L</div><div><div class="t-name">LEÏLA K. · TUNIS</div><div class="t-stars">★★★★★</div></div></div></div>
+      <div class="t-card"><div class="t-text">"J'offre LUNE à toutes mes amies. C'est le cadeau parfait pour une femme qui mérite le meilleur."</div><div class="t-auth"><div class="t-av">N</div><div><div class="t-name">NINA R. · LYON</div><div class="t-stars">★★★★★</div></div></div></div>
+      <div class="t-card"><div class="t-text">"La dentelle Nuit Étoilée est d'une légèreté incroyable — on oublie presque qu'on la porte."</div><div class="t-auth"><div class="t-av">A</div><div><div class="t-name">AMIRA B. · CASABLANCA</div><div class="t-stars">★★★★★</div></div></div></div>
+    </div>
+  </section>
+ 
+  <!-- Newsletter -->
+  <section class="nl">
+    <div class="reveal">
+      <div class="sec-ey" style="justify-content:center;margin-bottom:16px">REJOINDRE LA COMMUNAUTÉ</div>
+      <h2 class="nl-title">Entrez dans<br>l'univers <em>LUNE</em></h2>
+      <p class="nl-sub">"Accès en avant-première aux nouvelles collections."</p>
+      <div class="nl-form">
+        <input class="nl-input" type="email" placeholder="VOTRE EMAIL">
+        <button class="nl-btn" onclick="showToast('Bienvenue dans l\'univers LUNE ✦')">S'INSCRIRE</button>
+      </div>
+    </div>
+  </section>
+ 
+</div><!-- /home -->
+ 
+<!-- ════════════════════════════════════════
+     COLLECTION
+════════════════════════════════════════ -->
+<div class="page" id="pg-collection">
+  <div class="coll-hero">
+    <div class="sec-ey" style="justify-content:center;margin-bottom:16px">NOS COLLECTIONS</div>
+    <h1 class="coll-hero-title">L'Art de <em>l'Intimité</em></h1>
+  </div>
+ 
+  <div class="coll-filters">
+    <button class="filter-btn active" onclick="filterCol(this,'all')">TOUT</button>
+    <button class="filter-btn" onclick="filterCol(this,'dentelle')">DENTELLE</button>
+    <button class="filter-btn" onclick="filterCol(this,'soie')">SOIE & SATIN</button>
+    <button class="filter-btn" onclick="filterCol(this,'edition')">ÉDITION LIMITÉE</button>
+  </div>
+ 
+  <div class="coll-grid">
+    <!-- 9 products -->
+    <div class="coll-card" data-cat="dentelle" onclick="openProduct('nuit')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 55% 35%,rgba(139,58,82,.3) 0%,transparent 60%),linear-gradient(165deg,#201414 0%,#0e0909 100%)"></div><svg width="70" height="70" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.7"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".82"/></svg><div class="coll-card-add" onclick="addCart(event,'Nuit Étoilée','89')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">DENTELLE</div><div class="coll-card-name">Nuit Étoilée</div><div class="coll-card-price">89 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="soie" onclick="openProduct('lumiere')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 40% 60%,rgba(201,169,110,.2) 0%,transparent 55%),linear-gradient(195deg,#1c1515 0%,#0c0909 100%)"></div><svg width="60" height="60" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.65"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".78"/></svg><div class="coll-card-add" onclick="addCart(event,'Lumière Dorée','74')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">SOIE & SATIN</div><div class="coll-card-name">Lumière Dorée</div><div class="coll-card-price">74 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="edition" onclick="openProduct('rouge')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 65% 40%,rgba(139,58,82,.25) 0%,transparent 55%),linear-gradient(145deg,#1a1212 0%,#0d0a0a 100%)"></div><div class="coll-card-badge">LIMITÉ</div><svg width="55" height="55" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.65"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".75"/></svg><div class="coll-card-add" onclick="addCart(event,'Rouge Secret','95')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">ÉDITION LIMITÉE</div><div class="coll-card-name">Rouge Secret</div><div class="coll-card-price">95 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="soie" onclick="openProduct('velours')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,.15) 0%,transparent 60%),linear-gradient(170deg,#181313 0%,#0c0909 100%)"></div><svg width="58" height="58" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.62"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".72"/></svg><div class="coll-card-add" onclick="addCart(event,'Velours Noir','110')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">SOIE & SATIN</div><div class="coll-card-name">Velours Noir</div><div class="coll-card-price">110 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="dentelle" onclick="openProduct('eclipse')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 35% 45%,rgba(139,58,82,.22) 0%,transparent 58%),linear-gradient(155deg,#1e1313 0%,#0e0a0a 100%)"></div><svg width="62" height="62" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.67"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".79"/></svg><div class="coll-card-add" onclick="addCart(event,'Éclipse','82')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">DENTELLE</div><div class="coll-card-name">Éclipse</div><div class="coll-card-price">82 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="edition" onclick="openProduct('nuit')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 35%,rgba(139,58,82,.28) 0%,transparent 55%),linear-gradient(160deg,#1f1414 0%,#0f0a0a 100%)"></div><div class="coll-card-badge">LIMITÉ</div><svg width="52" height="52" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.6"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".7"/></svg><div class="coll-card-add" onclick="addCart(event,'Nuit de Soie','128')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">ÉDITION LIMITÉE</div><div class="coll-card-name">Nuit de Soie</div><div class="coll-card-price">128 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="dentelle" onclick="openProduct('nuit')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 45% 55%,rgba(201,169,110,.13) 0%,transparent 55%),linear-gradient(180deg,#171212 0%,#0b0909 100%)"></div><svg width="64" height="64" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.63"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".76"/></svg><div class="coll-card-add" onclick="addCart(event,'Ombre Dentelle','78')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">DENTELLE</div><div class="coll-card-name">Ombre Dentelle</div><div class="coll-card-price">78 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="soie" onclick="openProduct('lumiere')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 42%,rgba(201,169,110,.18) 0%,transparent 58%),linear-gradient(150deg,#1b1414 0%,#0d0a0a 100%)"></div><svg width="56" height="56" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.64"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".73"/></svg><div class="coll-card-add" onclick="addCart(event,'Ivoire Satin','68')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">SOIE & SATIN</div><div class="coll-card-name">Ivoire Satin</div><div class="coll-card-price">68 €</div></div>
+    </div>
+    <div class="coll-card" data-cat="edition" onclick="openProduct('rouge')">
+      <div class="coll-card-img"><div class="coll-card-bg" style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 38%,rgba(139,58,82,.3) 0%,transparent 56%),linear-gradient(168deg,#201313 0%,#0f0909 100%)"></div><div class="coll-card-badge">LIMITÉ</div><svg width="58" height="58" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.66"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".77"/></svg><div class="coll-card-add" onclick="addCart(event,'Minuit Bordeaux','115')">+</div></div>
+      <div class="coll-card-info"><div class="coll-card-cat">ÉDITION LIMITÉE</div><div class="coll-card-name">Minuit Bordeaux</div><div class="coll-card-price">115 €</div></div>
+    </div>
+  </div>
+</div><!-- /collection -->
+ 
+<!-- ════════════════════════════════════════
+     PRODUCT
+════════════════════════════════════════ -->
+<div class="page" id="pg-product">
+  <div class="prod-page">
+    <div style="margin-bottom:24px;padding-top:12px">
+      <button class="btn-gh" onclick="goTo('collection')" style="font-size:.44rem">← Retour à la collection</button>
+    </div>
+    <div class="prod-layout">
+      <!-- Gallery -->
+      <div class="prod-gallery">
+        <div class="prod-main-img">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 55% 40%,rgba(139,58,82,.28) 0%,transparent 60%),linear-gradient(160deg,#201414 0%,#0e0909 100%)"></div>
+          <svg width="130" height="130" viewBox="0 0 200 200" style="position:relative;z-index:1;opacity:.8"><circle cx="100" cy="100" r="88" fill="none" stroke="#c9a96e" stroke-width=".7" opacity=".2"/><circle cx="100" cy="100" r="68" fill="#180f0f"/><path d="M100 37 A63 63 0 1 1 100 163 A44 44 0 1 0 100 37Z" fill="#c9a96e" opacity=".82"/><circle cx="50" cy="70" r="1.8" fill="#c9a96e" opacity=".5"/><circle cx="42" cy="100" r="1.2" fill="#c9a96e" opacity=".4"/><circle cx="54" cy="130" r="2.2" fill="#c9a96e" opacity=".45"/></svg>
+        </div>
+        <div class="prod-thumbs">
+          <div class="thumb active"><div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(139,58,82,.3) 0%,transparent 70%),#1a1212"></div><svg width="30" height="30" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.7"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".8"/></svg></div>
+          <div class="thumb"><div style="position:absolute;inset:0;background:radial-gradient(ellipse at 40% 60%,rgba(201,169,110,.18) 0%,transparent 70%),#181212"></div></div>
+          <div class="thumb"><div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(139,58,82,.2) 0%,transparent 70%),#1c1313"></div></div>
+          <div class="thumb"><div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(201,169,110,.12) 0%,transparent 70%),#161010"></div></div>
+        </div>
+      </div>
+      <!-- Details -->
+      <div class="prod-details">
+        <div class="prod-d-tag" id="pd-tag">COLLECTION PHARE</div>
+        <h1 class="prod-d-name" id="pd-name">Nuit <em>Étoilée</em></h1>
+        <div class="prod-d-price" id="pd-price">89 €</div>
+        <div class="prod-d-divider"></div>
+        <p class="prod-d-desc">Dentelle noire et or, façonnée pour la femme qui illumine l'obscurité. Chaque fil est tissé avec précision pour une sensualité qui se porte comme un secret.</p>
+        <div class="size-label">TAILLE — <span style="color:var(--gold)">Guide des tailles</span></div>
+        <div class="sizes">
+          <button class="size-btn" onclick="selectSize(this)">XS</button>
+          <button class="size-btn active" onclick="selectSize(this)">S</button>
+          <button class="size-btn" onclick="selectSize(this)">M</button>
+          <button class="size-btn" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+        </div>
+        <button class="add-cart-btn" id="pd-add-btn" onclick="addCartFromProduct()">AJOUTER AU PANIER</button>
+        <button class="wishlist-btn">♡ &nbsp; AJOUTER À LA LISTE DE SOUHAITS</button>
+        <div class="prod-features">
+          <div class="feat"><div class="feat-icon">✦</div><div class="feat-text">Livraison offerte dès 120€ · Retour sous 30 jours</div></div>
+          <div class="feat"><div class="feat-icon">◎</div><div class="feat-text">Dentelle de Calais · Satin de soie · Élasthane</div></div>
+          <div class="feat"><div class="feat-icon">◈</div><div class="feat-text">Confectionné à la main en France</div></div>
+        </div>
+        <div class="prod-accord">
+          <div class="accord-item">
+            <button class="accord-btn" onclick="toggleAccord(this)"><span>COMPOSITION & MATIÈRES</span><span>+</span></button>
+            <div class="accord-content"><p>85% Polyamide · 12% Élasthane · 3% Soie. Dentelle de Calais certifiée. Doublure en satin de soie naturelle. Teintes fixées à l'eau froide pour une tenue durable des couleurs.</p></div>
+          </div>
+          <div class="accord-item">
+            <button class="accord-btn" onclick="toggleAccord(this)"><span>ENTRETIEN</span><span>+</span></button>
+            <div class="accord-content"><p>Lavage à la main à 30°C maximum. Ne pas essorer. Séchage à plat à l'ombre. Ne pas utiliser de sèche-linge. Repassage interdit sur la dentelle.</p></div>
+          </div>
+          <div class="accord-item">
+            <button class="accord-btn" onclick="toggleAccord(this)"><span>LIVRAISON & RETOURS</span><span>+</span></button>
+            <div class="accord-content"><p>Livraison sous 2-4 jours ouvrables en France. Livraison internationale 5-8 jours. Retours acceptés sous 30 jours dans l'emballage d'origine non ouvert.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /product -->
+ 
+<!-- ════════════════════════════════════════
+     CART
+════════════════════════════════════════ -->
+<div class="page" id="pg-cart">
+  <div class="cart-page">
+    <h1 class="cart-title">Mon <em>Panier</em></h1>
+    <div class="cart-layout">
+      <div>
+        <div class="cart-items" id="cart-items">
+          <!-- populated by JS -->
+        </div>
+        <div id="empty-cart" style="display:none;text-align:center;padding:80px 0">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#3a2a2a;margin-bottom:20px;font-style:italic">Votre panier est vide</div>
+          <button class="btn-p" onclick="goTo('collection')">DÉCOUVRIR NOS COLLECTIONS</button>
+        </div>
+      </div>
+      <div>
+        <div class="cart-summary" id="cart-summary">
+          <div class="summary-title">RÉCAPITULATIF</div>
+          <div class="summary-row"><span class="summary-label">Sous-total</span><span class="summary-val" id="subtotal">0 €</span></div>
+          <div class="summary-row"><span class="summary-label">Livraison</span><span class="summary-val" id="shipping">Gratuite</span></div>
+          <div class="promo-row">
+            <input class="promo-input" placeholder="CODE PROMO">
+            <button class="promo-btn">APPLIQUER</button>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-row"><span class="summary-total-label">Total</span><span class="summary-total-val" id="total">0 €</span></div>
+          <button class="checkout-btn" onclick="showToast('Redirection vers le paiement... ✦')">PROCÉDER AU PAIEMENT</button>
+          <p class="summary-note">Paiement sécurisé · CB · PayPal · Apple Pay</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /cart -->
+ 
+<!-- ════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════ -->
+<div class="page" id="pg-about">
+  <div class="about-hero">
+    <div>
+      <div class="sec-ey" style="justify-content:center;margin-bottom:16px">NOTRE HISTOIRE</div>
+      <h1 class="about-hero-title">L'intimité<em>réinventée</em></h1>
+    </div>
+  </div>
+ 
+  <div class="about-content">
+    <div class="about-grid reveal">
+      <div class="about-img-box">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(139,58,82,.22) 0%,transparent 65%)"></div>
+        <svg width="180" height="180" viewBox="0 0 200 200" style="position:relative;z-index:1;opacity:.82">
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#c9a96e" stroke-width=".7" opacity=".2"/>
+          <circle cx="100" cy="100" r="65" fill="#180f0f"/>
+          <path d="M100 37 A63 63 0 1 1 100 163 A44 44 0 1 0 100 37Z" fill="#c9a96e" opacity=".82"/>
+          <circle cx="50" cy="70" r="1.8" fill="#c9a96e" opacity=".5"/>
+          <circle cx="42" cy="100" r="1.2" fill="#c9a96e" opacity=".4"/>
+        </svg>
+      </div>
+      <div class="about-text-block">
+        <div class="sec-ey">QUI SOMMES-NOUS</div>
+        <h2 class="sec-title" style="margin-bottom:0">La femme<br><em>avant tout</em></h2>
+        <p class="ab-body">LUNE est née d'une conviction simple : chaque femme mérite de se sentir belle — même dans les moments les plus intimes. Nous créons des pièces qui ne se voient pas, mais qui se ressentent. Des pièces qui changent la façon dont une femme se perçoit, dès le matin, dès qu'elle s'habille.</p>
+        <p class="ab-body" style="margin-top:-16px">Notre fondatrice voulait une marque qui parle d'égale à égale. Pas de corps "parfaits" retouchés. Pas de promesses irréalistes. Juste de la beauté, de la qualité, et le respect que chaque femme mérite.</p>
+      </div>
+    </div>
+ 
+    <div class="values-grid reveal">
+      <div class="value-card"><div class="value-num">01</div><div class="value-title">MATIÈRES NOBLES</div><div class="value-desc">Soie, dentelle de Calais, satin. Chaque tissu est sélectionné pour sa douceur, sa tenue et sa beauté.</div></div>
+      <div class="value-card"><div class="value-num">02</div><div class="value-title">COUPE PRÉCISE</div><div class="value-desc">Des patrons pensés pour chaque silhouette. Confort et sensualité ne font qu'un chez LUNE.</div></div>
+      <div class="value-card"><div class="value-num">03</div><div class="value-title">ÉDITION LIMITÉE</div><div class="value-desc">Des collections en quantité restreinte pour garantir l'exclusivité de chaque pièce portée.</div></div>
+      <div class="value-card"><div class="value-num">04</div><div class="value-title">ÉTHIQUE & DURABLE</div><div class="value-desc">Production responsable, matières certifiées, packaging 100% recyclable. La beauté ne doit pas coûter la planète.</div></div>
+    </div>
+  </div>
+ 
+  <div class="team-section">
+    <div class="sec-ey" style="justify-content:center;margin-bottom:16px">NOTRE PROMESSE</div>
+    <h2 class="sec-title" style="text-align:center"><em>Se sentir belle</em><br>est un droit.</h2>
+    <p class="team-quote">"Là où le luxe rencontre l'intimité — LUNE."</p>
+  </div>
+</div><!-- /about -->
+ 
+<!-- ════════════════════════════════════════
+     CONTACT
+════════════════════════════════════════ -->
+<div class="page" id="pg-contact">
+  <div class="contact-page">
+    <div class="contact-left">
+      <div class="sec-ey" style="margin-bottom:20px">NOUS CONTACTER</div>
+      <h1 class="contact-h">Parlons<em>ensemble</em></h1>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--muted);line-height:1.85">Notre équipe est disponible pour répondre à toutes vos questions — commandes, tailles, collaborations ou presse.</p>
+      <div class="contact-info">
+        <div class="c-info-item">
+          <div class="c-icon">✉</div>
+          <div><div class="c-info-label">EMAIL</div><div class="c-info-val">contact@lune-lingerie.com</div></div>
+        </div>
+        <div class="c-info-item">
+          <div class="c-icon">☎</div>
+          <div><div class="c-info-label">TÉLÉPHONE</div><div class="c-info-val">+33 1 42 00 00 00</div></div>
+        </div>
+        <div class="c-info-item">
+          <div class="c-icon">◎</div>
+          <div><div class="c-info-label">ADRESSE</div><div class="c-info-val">12 Rue de la Paix, 75002 Paris</div></div>
+        </div>
+        <div class="c-info-item">
+          <div class="c-icon">◷</div>
+          <div><div class="c-info-label">HORAIRES</div><div class="c-info-val">Lun–Ven · 9h–18h</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <div class="sec-ey" style="margin-bottom:24px">FORMULAIRE DE CONTACT</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">PRÉNOM</label><input class="form-input" type="text" placeholder="Marie"></div>
+        <div class="form-group"><label class="form-label">NOM</label><input class="form-input" type="text" placeholder="Dupont"></div>
+      </div>
+      <div class="form-group"><label class="form-label">EMAIL</label><input class="form-input" type="email" placeholder="marie@email.com"></div>
+      <div class="form-group"><label class="form-label">SUJET</label><input class="form-input" type="text" placeholder="Commande · Taille · Collaboration"></div>
+      <div class="form-group"><label class="form-label">MESSAGE</label><textarea class="form-textarea" placeholder="Votre message..."></textarea></div>
+      <button class="form-submit" onclick="showToast('Message envoyé ✦')">ENVOYER LE MESSAGE</button>
+    </div>
+  </div>
+</div><!-- /contact -->
+ 
+<!-- FOOTER (shown on all pages) -->
+<footer id="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="f-brand">LUNE</div>
+      <p class="f-desc">Lingerie de luxe pensée pour la femme moderne. Sensualité, raffinement, intimité — à chaque pièce portée.</p>
+    </div>
+    <div class="f-col"><h4>COLLECTIONS</h4><ul><li><a onclick="goTo('collection')">Nuit Étoilée</a></li><li><a onclick="goTo('collection')">Lumière Dorée</a></li><li><a onclick="goTo('collection')">Rouge Secret</a></li><li><a onclick="goTo('collection')">Nouveautés</a></li></ul></div>
+    <div class="f-col"><h4>LA MARQUE</h4><ul><li><a onclick="goTo('about')">Notre Histoire</a></li><li><a onclick="goTo('about')">Engagements</a></li><li><a onclick="goTo('contact')">Presse</a></li><li><a onclick="goTo('contact')">Contact</a></li></ul></div>
+    <div class="f-col"><h4>SERVICE</h4><ul><li><a>Livraison</a></li><li><a>Retours</a></li><li><a>Guide des tailles</a></li><li><a>FAQ</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <div class="f-copy">© 2025 LUNE — TOUS DROITS RÉSERVÉS · PARIS</div>
+    <div class="f-social"><a>INSTAGRAM</a><a>PINTEREST</a><a>TIKTOK</a></div>
+  </div>
+</footer>
+ 
+<script>
+// ── State ──
+let cartItems = [];
+let currentProduct = {name:'Nuit Étoilée', price:'89', tag:'COLLECTION PHARE'};
+let mx=0,my=0,rx=0,ry=0;
+ 
+// ── Cursor ──
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function animC(){
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  rx += (mx-rx)*.12; ry += (my-ry)*.12;
+  curR.style.left=rx+'px'; curR.style.top=ry+'px';
+  requestAnimationFrame(animC);
+})();
+document.querySelectorAll('button,a,[onclick]').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='7px';cur.style.height='7px'});
+});
+ 
+// ── Nav scroll ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled', scrollY>40);
+});
+ 
+// ── Navigation ──
+function goTo(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pg-'+page).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active-nav'));
+  const nlEl = document.getElementById('nl-'+page);
+  if(nlEl) nlEl.classList.add('active-nav');
+  window.scrollTo(0,0);
+  if(page==='cart') renderCart();
+  initReveal();
+}
+ 
+// ── Products ──
+const products = {
+  nuit:    {name:'Nuit <em>Étoilée</em>',   price:'89',  tag:'COLLECTION PHARE'},
+  lumiere: {name:'Lumière <em>Dorée</em>',   price:'74',  tag:'SOIE & SATIN'},
+  rouge:   {name:'Rouge <em>Secret</em>',    price:'95',  tag:'ÉDITION LIMITÉE'},
+  velours: {name:'Velours <em>Noir</em>',    price:'110', tag:'SOIE & SATIN'},
+  eclipse: {name:'Éclipse',                  price:'82',  tag:'DENTELLE'},
+};
+ 
+function openProduct(key){
+  const p = products[key] || products.nuit;
+  currentProduct = {name:p.name.replace(/<[^>]+>/g,''), price:p.price, tag:p.tag};
+  document.getElementById('pd-name').innerHTML = p.name;
+  document.getElementById('pd-price').textContent = p.price+' €';
+  document.getElementById('pd-tag').textContent = p.tag;
+  goTo('product');
+}
+ 
+function selectSize(btn){
+  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+ 
+function addCartFromProduct(){
+  const size = document.querySelector('.size-btn.active')?.textContent || 'S';
+  addToCart(currentProduct.name, currentProduct.price, size);
+}
+ 
+// ── Cart ──
+function addCart(e, name, price){
+  e.stopPropagation();
+  addToCart(name, price, 'S');
+}
+ 
+function addToCart(name, price, size='S'){
+  const existing = cartItems.find(i=>i.name===name && i.size===size);
+  if(existing){ existing.qty++; }
+  else{ cartItems.push({name, price:parseInt(price), size, qty:1}); }
+  updateCartCount();
+  showToast('Ajouté au panier ✦');
+}
+ 
+function updateCartCount(){
+  const total = cartItems.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cart-count').textContent = total;
+}
+ 
+function renderCart(){
+  const container = document.getElementById('cart-items');
+  const empty = document.getElementById('empty-cart');
+  const summary = document.getElementById('cart-summary');
+ 
+  if(!cartItems.length){
+    container.innerHTML='';
+    empty.style.display='block';
+    summary.style.display='none';
+    return;
+  }
+  empty.style.display='none';
+  summary.style.display='block';
+ 
+  container.innerHTML = cartItems.map((item,i)=>`
+    <div class="cart-item">
+      <div class="cart-item-img">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(139,58,82,.25) 0%,transparent 70%),#1a1212"></div>
+        <svg width="36" height="36" viewBox="0 0 100 100" style="position:relative;z-index:1;opacity:.7"><circle cx="50" cy="50" r="35" fill="#1a1212"/><path d="M50 16 A34 34 0 1 1 50 84 A24 24 0 1 0 50 16Z" fill="#c9a96e" opacity=".8"/></svg>
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">TAILLE ${item.size} &nbsp;·&nbsp; LUNE PARIS</div>
+        <div class="cart-qty">
+          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <div class="qty-val">${item.qty}</div>
+          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+        <button class="cart-remove" onclick="removeItem(${i})">SUPPRIMER</button>
+      </div>
+      <div>
+        <div class="cart-item-price">${item.price * item.qty} €</div>
+      </div>
+    </div>
+  `).join('');
+ 
+  const sub = cartItems.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('subtotal').textContent = sub+' €';
+  document.getElementById('total').textContent = sub+' €';
+  document.getElementById('shipping').textContent = sub>=120 ? 'Gratuite' : '6 €';
+}
+ 
+function changeQty(i, delta){
+  cartItems[i].qty += delta;
+  if(cartItems[i].qty <= 0) cartItems.splice(i,1);
+  updateCartCount();
+  renderCart();
+}
+ 
+function removeItem(i){
+  cartItems.splice(i,1);
+  updateCartCount();
+  renderCart();
+}
+ 
+// ── Accordion ──
+function toggleAccord(btn){
+  const item = btn.closest('.accord-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.accord-item').forEach(i=>i.classList.remove('open'));
+  document.querySelectorAll('.accord-btn span:last-child').forEach(s=>s.textContent='+');
+  if(!isOpen){
+    item.classList.add('open');
+    btn.querySelector('span:last-child').textContent='−';
+  }
+}
+ 
+// ── Collection filter ──
+function filterCol(btn, cat){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.coll-card').forEach(card=>{
+    card.style.display = (cat==='all' || card.dataset.cat===cat) ? 'block' : 'none';
+  });
+}
+ 
+// ── Toast ──
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+ 
+// ── Reveal on scroll ──
+function initReveal(){
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); }
+    });
+  },{threshold:.1});
+  els.forEach(el=>{ el.classList.remove('vis'); io.observe(el); });
+}
+initReveal();
+</script>
+</body>
+</html>
